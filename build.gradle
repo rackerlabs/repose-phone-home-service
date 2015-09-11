@@ -1,1 +1,7 @@
 apply plugin: 'scala'
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:1.2.5.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb:1.2.5.RELEASE")
+    testCompile("org.springframework.boot:spring-boot-starter-test:1.2.5.RELEASE")
+}
