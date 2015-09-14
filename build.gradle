@@ -1,7 +1,40 @@
+group = 'org.openrepose.phonehome'
+version = '1.0'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.0.2")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
 apply plugin: 'scala'
+apply plugin: 'groovy'
+apply plugin: 'org.unbroken-dome.test-sets'
+apply plugin: 'spring-boot'
+
+testSets {
+	integrationTest
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+repositories {
+	mavenCentral()
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
+    compile("org.scala-lang:scala-library:2.11.7")
     compile("org.springframework.boot:spring-boot-starter-web:1.2.5.RELEASE")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb:1.2.5.RELEASE")
-    testCompile("org.springframework.boot:spring-boot-starter-test:1.2.5.RELEASE")
+    testCompile("org.scalatest:scalatest_2.11:2.2.5")
+    integrationTestCompile("org.springframework.boot:spring-boot-starter-test:1.2.5.RELEASE")
 }
