@@ -19,9 +19,11 @@
  */
 package org.openrepose.phonehome
 
+import org.junit.runner.RunWith
 import org.mockito.{Matchers => MM}
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.FunSpec
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 import org.springframework.data.mongodb.core.MongoOperations
 
@@ -33,6 +35,7 @@ import scala.collection.JavaConversions._
  * Date: 9/14/15
  * Time: 4:27 PM
  */
+@RunWith(classOf[JUnitRunner])
 class PhoneHomeServiceTest extends FunSpec with MockitoSugar {
   val mongoOperations = mock[MongoOperations]
   val service: PhoneHomeService = new PhoneHomeService(mongoOperations)

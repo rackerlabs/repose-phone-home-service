@@ -41,6 +41,7 @@ dependencies {
     compile("org.scala-lang:scala-library:2.11.7")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb:$springBootVersion")
+    testCompile("junit:junit:4.12")
     testCompile("org.scalatest:scalatest_2.11:2.2.5")
     testCompile("org.mockito:mockito-all:1.10.19")
     integrationTestCompile("org.codehaus.groovy:groovy:2.4.4")
