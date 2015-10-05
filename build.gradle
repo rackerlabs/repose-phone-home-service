@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+apply plugin: 'idea'
 apply plugin: 'scala'
 apply plugin: 'groovy'
 apply plugin: 'org.unbroken-dome.test-sets'
@@ -51,4 +52,11 @@ dependencies {
     integrationTestCompile("org.apache.httpcomponents:httpclient:4.5.1")
     integrationTestCompile("org.spockframework:spock-core:$spockVersion")
     integrationTestCompile("org.spockframework:spock-spring:$spockVersion")
+}
+
+idea {
+    module {
+        testSourceDirs += project.sourceSets.integrationTest.allSource.srcDirs.flatten()
+        scopes.TEST.plus += [configurations.integrationTestCompile]
+    }
 }
