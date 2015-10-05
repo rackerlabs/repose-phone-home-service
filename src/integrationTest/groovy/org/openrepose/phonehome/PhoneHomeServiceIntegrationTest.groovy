@@ -1,8 +1,7 @@
 package org.openrepose.phonehome
-
 import org.apache.http.client.methods.CloseableHttpResponse
-import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.methods.RequestBuilder
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.data.mongodb.core.MongoOperations
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
@@ -28,12 +26,9 @@ class PhoneHomeServiceIntegrationTest extends Specification {
 
     @Shared
     CloseableHttpClient httpClient
-    @Shared
-    HttpComponentsClientHttpRequestFactory requestFactory
 
     def setupSpec() {
         httpClient = HttpClients.createDefault()
-        requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient)
     }
 
     def cleanupSpec() {
@@ -63,11 +58,11 @@ class PhoneHomeServiceIntegrationTest extends Specification {
     @Unroll("#method's to #path with #payload of type #contentType return #statusCode")
     def "test the various cases"() {
         given:
-        def request = buildRequest("http://localhost:$port$path", method)
-        if (payload) {
-            request.setEntity(new StringEntity(payload))
-        }
-        request.setHeader("Content-Type", contentType)
+        def request = RequestBuilder.create(method)
+                                    .setUri("http://localhost:$port$path")
+                                    .setEntity(new StringEntity(payload))
+                                    .setHeader("Content-Type", contentType)
+                                    .build()
 
         when:
         CloseableHttpResponse response = httpClient.execute(request)
@@ -78,23 +73,10 @@ class PhoneHomeServiceIntegrationTest extends Specification {
 
         where:
         method | path     | payload              | contentType        | statusCode
-        "post" | "/"      | """{"foo":"bar"}"""  | "application/json" | 200
-        "post" | "/butts" | """{"foo":"bar"}"""  | "application/json" | 405
-        "post" | "/"      | """{"foo":"bar",}""" | "application/json" | 400
-        "post" | "/"      | """<foo>bar</foo>""" | "application/xml"  | 415
-        "get"  | "/"      | ""                   | "application/json" | 405
-    }
-
-    def buildRequest(String uri, String method) {
-        def request
-        switch (method) {
-            case "post":
-                request = new HttpPost(uri)
-                break
-            case "get":
-                request = new HttpGet(uri)
-                break
-        }
-        request
+        "POST" | "/"      | """{"foo":"bar"}"""  | "application/json" | 200
+        "POST" | "/butts" | """{"foo":"bar"}"""  | "application/json" | 405
+        "POST" | "/"      | """{"foo":"bar",}""" | "application/json" | 400
+        "POST" | "/"      | """<foo>bar</foo>""" | "application/xml"  | 415
+        "GET"  | "/"      | ""                   | "application/json" | 405
     }
 }
