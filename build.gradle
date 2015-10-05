@@ -18,16 +18,16 @@ apply plugin: 'org.unbroken-dome.test-sets'
 apply plugin: 'spring-boot'
 
 testSets {
-	integrationTest
+    integrationTest
 }
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
 
 repositories {
-	mavenCentral()
+    mavenCentral()
     maven {
-            url 'http://repo.spring.io/milestone'
+        url 'http://repo.spring.io/milestone'
     }
 }
 

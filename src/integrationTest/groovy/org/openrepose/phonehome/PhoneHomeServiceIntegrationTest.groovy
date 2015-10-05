@@ -1,4 +1,5 @@
 package org.openrepose.phonehome
+
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
@@ -18,7 +19,7 @@ import spock.lang.Unroll
 
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = PhoneHomeService)
 @WebIntegrationTest
-class PhoneHomeServiceIntegrationTest extends Specification{
+class PhoneHomeServiceIntegrationTest extends Specification {
 
     @Value('${local.server.port}')
     int port
@@ -63,7 +64,7 @@ class PhoneHomeServiceIntegrationTest extends Specification{
     def "test the various cases"() {
         given:
         def request = buildRequest("http://localhost:$port$path", method)
-        if(payload) {
+        if (payload) {
             request.setEntity(new StringEntity(payload))
         }
         request.setHeader("Content-Type", contentType)
@@ -86,7 +87,7 @@ class PhoneHomeServiceIntegrationTest extends Specification{
 
     def buildRequest(String uri, String method) {
         def request
-        switch(method) {
+        switch (method) {
             case "post":
                 request = new HttpPost(uri)
                 break
