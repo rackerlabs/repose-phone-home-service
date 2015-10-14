@@ -8,7 +8,7 @@
 # Description:       Repose Phone Home Service
 ### END INIT INFO
 
-SCRIPT=/opt/repose-phone-home/bin/repose-phone-home-service
+SCRIPT="/opt/repose-phone-home/bin/repose-phone-home-service -c /etc/repose-phone-home"
 RUNAS=phone-home
 NAME=repose-phone-home
 
