@@ -84,10 +84,15 @@ ospackage {
     packageName = "repose-phone-home"
     version = project.version
     release = 1
-    arch = I386
+    arch = "all"
     os = LINUX
 
-    requires('mongodb')
+    user = 'root'
+    permissionGroup = 'root'
+
+    preInstall file('src/files/preInstall.sh')
+    postInstall file('src/files/postInstall.sh')
+    postUninstall file('src/files/postUninstall.sh')
 
     //Grab the bits out of the boot repackage excluding the extra versioned name
     from("${buildDir}/unpackedDist/${project.name}-${project.version}")
@@ -105,6 +110,9 @@ ospackage {
 }
 
 buildDeb {
+    requires('mongodb-server')
+    requires('openjdk-7-jre-headless')
     //Link in our init script
     link('/etc/init.d/repose-phone-home', '/opt/repose-phone-home/bin/repose-phone-home-debian.init')
+
 }
