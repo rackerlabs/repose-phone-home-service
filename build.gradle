@@ -87,8 +87,8 @@ ospackage {
     arch = "all"
     os = LINUX
 
-    user = 'root'
-    permissionGroup = 'root'
+    user = 'phone-home'
+    permissionGroup = 'phone-home'
 
     preInstall file('src/files/preInstall.sh')
     postInstall file('src/files/postInstall.sh')
