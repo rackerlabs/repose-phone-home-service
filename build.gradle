@@ -71,16 +71,17 @@ ospackage {
     arch = "all"
     os = LINUX
 
-    user = 'phone-home'
-    permissionGroup = 'phone-home'
+    user = 'repose-phone-home'
+    permissionGroup = 'respose-phone-home'
 
     preInstall file('src/files/preInstall.sh')
     postInstall file('src/files/postInstall.sh')
     postUninstall file('src/files/postUninstall.sh')
 
-    //Grab the bits out of the boot repackage excluding the extra versioned name
+    into '/opt/repose-phone-home'
+
     from(jar.outputs.files) {
-        into '/opt/repose-phone-home'
+        rename("${project.name}-${project.version}.jar", "repose-phone-home.jar")
     }
 
     from("src/files/config") {
@@ -88,7 +89,6 @@ ospackage {
         into "/etc/repose-phone-home"
     }
     from("src/files/inits") {
-        into "bin"
         fileMode 0550
     }
 }
@@ -97,6 +97,6 @@ buildDeb {
     requires('mongodb-server')
     requires('openjdk-7-jre-headless')
     //Link in our init script
-    link('/etc/init.d/repose-phone-home', '/opt/repose-phone-home/bin/repose-phone-home-debian.init')
+    link('/etc/init.d/repose-phone-home', '/opt/repose-phone-home/repose-phone-home-debian.init')
 
 }
