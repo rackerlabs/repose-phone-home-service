@@ -64,22 +64,6 @@ idea {
     }
 }
 
-/*
- To take advantage of the spring boot auto-repacking (rather than building our own shaded jar)
- As well as take advantage of the existing init scripts they provide,
- I have to unpack the existing zip file, so that I can strip out the extra directory we don't really want.
- Finally, I can't do that in a gradle task, because of REALLY OLD BUGS: https://issues.gradle.org/browse/GRADLE-2255
- Path I went down: https://discuss.gradle.org/t/strip-toplevel-directory-from-tartree/7500
- */
-task("unpackForPacking", dependsOn: "distZip", type: Copy) {
-    from {
-        zipTree(project.buildDir.absolutePath + "/distributions/${project.name}-${project.version}" + '.zip')
-    }
-    into file("${buildDir}/unpackedDist")
-}
-
-buildDeb.dependsOn unpackForPacking
-
 ospackage {
     packageName = "repose-phone-home"
     version = project.version
@@ -95,9 +79,9 @@ ospackage {
     postUninstall file('src/files/postUninstall.sh')
 
     //Grab the bits out of the boot repackage excluding the extra versioned name
-    from("${buildDir}/unpackedDist/${project.name}-${project.version}")
-
-    into '/opt/repose-phone-home'
+    from(jar.outputs.files) {
+        into '/opt/repose-phone-home'
+    }
 
     from("src/files/config") {
         fileType CONFIG | NOREPLACE
