@@ -19,6 +19,7 @@ apply plugin: 'groovy'
 apply plugin: 'org.unbroken-dome.test-sets'
 apply plugin: 'spring-boot'
 apply plugin: 'nebula.os-package'
+apply plugin: 'maven-publish'
 
 testSets {
     integrationTest
@@ -100,3 +101,25 @@ buildDeb {
     link('/etc/init.d/repose-phone-home', '/opt/repose-phone-home/repose-phone-home-debian.init')
 
 }
+
+publishing {
+    publications {
+        mavenJar(MavenPublication) {
+            artifactId "phone-home-service"
+            artifact source: jar, extension: 'jar'
+        }
+        mavenDeb(MavenPublication) {
+            artifactId "phone-home-service-deb"
+            artifact source: buildDeb, extension: 'deb'
+        }
+    }
+
+    repositories {
+        maven {
+            name 'releases.maven.research.rackspace.com'
+            url 'https://maven.research.rackspacecloud.com/content/repositories/releases'
+        }
+    }
+}
+
+tasks.findAll( { it.name.startsWith('publish') } ).each { it.dependsOn bootRepackage }
