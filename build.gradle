@@ -122,4 +122,6 @@ publishing {
     }
 }
 
-tasks.findAll( { it.name.startsWith('publish') } ).each { it.dependsOn bootRepackage }
+buildDeb.dependsOn bootRepackage
+tasks.findAll( { it.name.startsWith('publishMavenJar') } ).each { it.dependsOn bootRepackage }
+tasks.findAll( { it.name.startsWith('publishMavenDeb') } ).each { it.dependsOn buildDeb }
