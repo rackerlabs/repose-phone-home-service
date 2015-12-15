@@ -1,5 +1,5 @@
 group = 'org.openrepose.phonehome'
-version = '1.0'
+version = '1.0.0'
 
 buildscript {
     repositories {
@@ -10,7 +10,8 @@ buildscript {
         classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.0.2")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
         classpath("com.netflix.nebula:gradle-ospackage-plugin:2.2.6")
-        classpath 'org.hidetake:gradle-ssh-plugin:1.0.5'
+        classpath("org.hidetake:gradle-ssh-plugin:1.0.5")
+        classpath( "com.netflix.nebula:gradle-git-scm-plugin:3.0.1")
     }
 }
 
@@ -22,6 +23,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'nebula.os-package'
 apply plugin: 'maven-publish'
 apply plugin: 'org.hidetake.ssh'
+apply plugin: 'nebula.gradle-git-scm'
 
 testSets {
     integrationTest
@@ -151,6 +153,10 @@ task('publishToPackageRepo', dependsOn: 'buildDeb', group: 'publishing', descrip
             put from: buildDeb.outputs.files, into: '/home/repose-dev/RELEASES'
         }
     }
+}
+
+task('tagVersion', description: 'Tag the repository with the current version.', group: 'release') << {
+    scmFactory.create().tag(version)
 }
 
 buildDeb.dependsOn bootRepackage
