@@ -31,7 +31,6 @@ testSets {
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
-build.dependsOn buildDeb
 
 repositories {
     mavenCentral()
@@ -147,7 +146,7 @@ remotes {
     }
 }
 
-task('publishToPackageRepo', dependsOn: 'buildDeb', group: 'publishing', description: 'Publishes the debian package to the package repo.') << {
+task('publishToPackageRepo', dependsOn: buildDeb, group: 'publishing', description: 'Publishes the debian package to the package repo.') << {
     ssh.run {
         session(remotes.packageRepo) {
             put from: buildDeb.outputs.files, into: '/home/repose-dev/RELEASES'
@@ -159,8 +158,8 @@ task('tagVersion', description: 'Tag the repository with the current version.', 
     scmFactory.create().tag(version)
 }
 
-task('release', description: 'Release the project and publish to all repos.', group: 'release', dependsOn: ['publish', 'publishToPackageRepo', 'tagVersion'])
+task('release', description: 'Release the project and publish to all repos.', group: 'release', dependsOn: [publish, publishToPackageRepo, tagVersion])
 
-buildDeb.dependsOn bootRepackage
-tasks.findAll( { it.name.startsWith('publishMavenJar') } ).each { it.dependsOn bootRepackage }
+buildDeb.dependsOn bootRepackage, build
+tasks.findAll( { it.name.startsWith('publishMavenJar') } ).each { it.dependsOn bootRepackage, build }
 tasks.findAll( { it.name.startsWith('publishMavenDeb') } ).each { it.dependsOn buildDeb }
