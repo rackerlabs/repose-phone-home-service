@@ -32,6 +32,9 @@ build/
 # Ignore Gradle GUI config
 gradle-app.setting
 
+# Ignore local tmp dir
+local/
+
 ## generic files to ignore
 *~
 *.lock
