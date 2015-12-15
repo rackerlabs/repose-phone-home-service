@@ -159,6 +159,8 @@ task('tagVersion', description: 'Tag the repository with the current version.', 
     scmFactory.create().tag(version)
 }
 
+task('release', description: 'Release the project and publish to all repos.', group: 'release', dependsOn: ['publish', 'publishToPackageRepo', 'tagVersion'])
+
 buildDeb.dependsOn bootRepackage
 tasks.findAll( { it.name.startsWith('publishMavenJar') } ).each { it.dependsOn bootRepackage }
 tasks.findAll( { it.name.startsWith('publishMavenDeb') } ).each { it.dependsOn buildDeb }
