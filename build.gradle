@@ -118,6 +118,10 @@ publishing {
         maven {
             name 'releases.maven.research.rackspace.com'
             url 'https://maven.research.rackspacecloud.com/content/repositories/releases'
+            credentials {
+                username property('maven.repo.username')
+                password property('maven.repo.password')
+            }
         }
     }
 }
