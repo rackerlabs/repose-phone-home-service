@@ -10,6 +10,7 @@ buildscript {
         classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.0.2")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
         classpath("com.netflix.nebula:gradle-ospackage-plugin:2.2.6")
+        classpath 'org.hidetake:gradle-ssh-plugin:1.0.5'
     }
 }
 
@@ -20,6 +21,7 @@ apply plugin: 'org.unbroken-dome.test-sets'
 apply plugin: 'spring-boot'
 apply plugin: 'nebula.os-package'
 apply plugin: 'maven-publish'
+apply plugin: 'org.hidetake.ssh'
 
 testSets {
     integrationTest
@@ -122,6 +124,31 @@ publishing {
                 username property('maven.repo.username')
                 password property('maven.repo.password')
             }
+        }
+    }
+}
+
+remotes {
+    packageRepo {
+        user = 'repose-dev'
+        host = 'repo.openrepose.org'
+        def repoKey = new File("${System.properties['user.home']}/.ssh/repo_key")
+        if (repoKey.exists()) {
+            identity = file(repoKey)
+        } else {
+            identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+        }
+        def systemKnownHosts = new File("/etc/ssh/ssh_known_hosts")
+        if (systemKnownHosts.exists()) {
+            knownHosts = file(systemKnownHosts)
+        }
+    }
+}
+
+task('publishToPackageRepo', dependsOn: 'buildDeb', group: 'publishing', description: 'Publishes the debian package to the package repo.') << {
+    ssh.run {
+        session(remotes.packageRepo) {
+            put from: buildDeb.outputs.files, into: '/home/repose-dev/RELEASES'
         }
     }
 }
