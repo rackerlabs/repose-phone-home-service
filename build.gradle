@@ -1,5 +1,5 @@
 group = 'org.openrepose.phonehome'
-version = '1.0.0'
+version = '1.0.1'
 
 buildscript {
     repositories {
@@ -98,7 +98,6 @@ ospackage {
 }
 
 buildDeb {
-    requires('mongodb-server')
     requires('openjdk-7-jre-headless')
     //Link in our init script
     link('/etc/init.d/repose-phone-home', '/opt/repose-phone-home/repose-phone-home-debian.init')
