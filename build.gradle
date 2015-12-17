@@ -92,6 +92,11 @@ ospackage {
         fileType CONFIG | NOREPLACE
     }
 
+    from("src/files/config/repose-phone-home") {
+        fileType CONFIG | NOREPLACE
+        into "/etc/default"
+    }
+
     from("src/files/inits") {
         fileMode 0550
     }
