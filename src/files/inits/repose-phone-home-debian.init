@@ -28,7 +28,6 @@ set -e
 # Set sensible defaults
 
 NAME=repose-phone-home
-CONFIG_DIRECTORY_DEFAULT=/etc/${NAME}
 USER=${NAME}
 GROUP=${NAME}
 DAEMON_HOME=/opt/${NAME}
@@ -39,23 +38,10 @@ START_ARGS="--start --quiet --oknodo --make-pidfile --pidfile ${PID_FILE} --back
 # Can override the defaults in /etc/sysconfig
 . /etc/default/${NAME}
 
-###########################
-# Start daemon
-###########################
-start_daemon()
-{
-  if [ -z "$CONFIG_DIRECTORY" ]; then
-    CONFIG_DIRECTORY="$CONFIG_DIRECTORY_DEFAULT"
-    export CONFIG_DIRECTORY
-  fi
-
-  if [ -z "$PHONE_HOME_OPTS" ]; then
-    PHONE_HOME_OPTS=""
-    export PHONE_HOME_OPTS
-  fi
-
+# Find the actual Java command to be used.
+if [ -z "$JAVACMD" ] ; then
   if [ -z "$JAVA_HOME" ]; then
-    javaExecutable="`which javac`"
+    javaExecutable="`which java`"
     if [ -n "$javaExecutable" -a ! "`expr \"$javaExecutable\" : '\([^ ]*\)'`" = "no" ]; then
       # readlink(1) is not available as standard on Solaris 10.
       readLink=`which readlink`
@@ -68,26 +54,35 @@ start_daemon()
       fi
     fi
   fi
+  if [ -n "$JAVA_HOME"  ] ; then
+      JAVACMD="$JAVA_HOME/bin/java"
+  else
+    JAVACMD="`which java`"
+  fi
+fi
 
-  if [ -z "$JAVACMD" ] ; then
-    if [ -n "$JAVA_HOME"  ] ; then
-        JAVACMD="$JAVA_HOME/bin/java"
-    else
-      JAVACMD="`which java`"
-    fi
+###########################
+# Start daemon
+###########################
+start_daemon()
+{
+  if [ -z "$PHONE_HOME_OPTS" ]; then
+    PHONE_HOME_OPTS=""
+    export PHONE_HOME_OPTS
   fi
 
   if [ ! -x "$JAVACMD" ] ; then
-    echo "Error: JAVA_HOME is not defined correctly."
-    echo "  We cannot execute $JAVACMD"
+    if [ -z "$JAVA_HOME" ] ; then
+      echo "Warning: JAVA_HOME environment variable is not set."
+    else
+      echo "Error: JAVA_HOME is not defined correctly."
+    fi
+    echo "Error: We cannot execute $JAVACMD"
     exit 1
   fi
 
-  if [ -z "$JAVA_HOME" ] ; then
-    echo "Warning: JAVA_HOME environment variable is not set."
-  fi
-
-  start-stop-daemon $START_ARGS --chuid $USER:$GROUP --exec $JAVA -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR -c $CONFIG_DIRECTORY
+  #echo "start-stop-daemon $START_ARGS --chuid $USER:$GROUP --exec $JAVACMD -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR"
+  start-stop-daemon $START_ARGS --chuid $USER:$GROUP --exec $JAVACMD -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR
 
   log_progress_msg "started"
 }
@@ -97,7 +92,7 @@ start_daemon()
 ###########################
 stop_daemon()
 {
-  start-stop-daemon -p $PID_FILE --stop --user $USER --retry 5 --exec $JAVA
+  start-stop-daemon -p $PID_FILE --stop --user $USER --retry 5 --exec $JAVACMD
   log_progress_msg "stopped"
 }
 
