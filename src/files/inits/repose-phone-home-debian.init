@@ -37,7 +37,7 @@ PHONE_HOME_JAR=${DAEMON_HOME}/${NAME}.jar
 START_ARGS="--start --quiet --oknodo --make-pidfile --pidfile ${PID_FILE} --background"
 
 # Can override the defaults in /etc/sysconfig
-. /etc/sysconfig/${NAME}
+. /etc/default/${NAME}
 
 ###########################
 # Start daemon
