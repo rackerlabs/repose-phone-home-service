@@ -76,7 +76,7 @@ ospackage {
     os = LINUX
 
     user = 'repose-phone-home'
-    permissionGroup = 'respose-phone-home'
+    permissionGroup = 'repose-phone-home'
 
     preInstall file('src/files/preInstall.sh')
     postInstall file('src/files/postInstall.sh')
