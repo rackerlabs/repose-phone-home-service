@@ -88,10 +88,10 @@ ospackage {
         rename("${project.name}-${project.version}.jar", "repose-phone-home.jar")
     }
 
-    from("src/files/config") {
+    from("src/files/config/application.properties") {
         fileType CONFIG | NOREPLACE
-        into "/etc/repose-phone-home"
     }
+
     from("src/files/inits") {
         fileMode 0550
     }
