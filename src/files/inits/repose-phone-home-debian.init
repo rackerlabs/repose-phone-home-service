@@ -81,8 +81,7 @@ start_daemon()
     exit 1
   fi
 
-  #echo "start-stop-daemon $START_ARGS --chuid $USER:$GROUP --exec $JAVACMD -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR"
-  start-stop-daemon $START_ARGS --chuid $USER:$GROUP --exec $JAVACMD -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR
+  start-stop-daemon $START_ARGS --chuid $USER:$GROUP --chdir $DAEMON_HOME --exec $JAVACMD -- $PHONE_HOME_OPTS -jar $PHONE_HOME_JAR
 
   log_progress_msg "started"
 }
@@ -99,9 +98,6 @@ stop_daemon()
 # -----------------------------------------------------------------------------
 # Script entry point...
 # -----------------------------------------------------------------------------
-# Switch to the daemon's home directory to do all of this...
-cd $DAEMON_HOME
-
 if [ $? -ne 0 ]; then
   echo "Unable to find $NAME's directory."
   exit 1
