@@ -1,2 +1,7 @@
-# This is for overriding any system-wide defaults
-# It is empty by default.
+# Default settings for repose-phone-home.
+# This file is sourced by /bin/sh from
+# /etc/init.d/repose-phone-home.
+
+# Options to pass to repose-phone-home
+#JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
+PHONE_HOME_OPTS=
