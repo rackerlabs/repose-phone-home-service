@@ -35,7 +35,7 @@ PID_FILE=/var/run/${NAME}.pid
 PHONE_HOME_JAR=${DAEMON_HOME}/${NAME}.jar
 START_ARGS="--start --quiet --oknodo --make-pidfile --pidfile ${PID_FILE} --background"
 
-# Can override the defaults in /etc/sysconfig
+# Allows for overriding any system-wide defaults
 . /etc/default/${NAME}
 
 # Find the actual Java command to be used.
